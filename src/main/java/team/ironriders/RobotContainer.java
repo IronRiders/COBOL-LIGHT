@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -33,9 +34,10 @@ public class RobotContainer {
     public final DriveSubsystem drive = new DriveSubsystem();
     public final ManipulatorSubsystem manipulator = new ManipulatorSubsystem();
     private final CommandJoystick controller = new CommandJoystick(0);
-    private double speedMultiplier = 0.5;
+    private double speedMultiplier = Constants.DRIVE_SPEED;
     PowerDistribution pdh = new PowerDistribution(13, PowerDistribution.ModuleType.kRev);
     SendableChooser<String> speedChooser = new SendableChooser<>();
+    String lastSelectedSpeed = speedChooser.getSelected();
 
     public RobotContainer() {
         // Configure the trigger bindings
@@ -45,7 +47,9 @@ public class RobotContainer {
     }
 
     public void periodic() {
-        speedMultiplier = Double.parseDouble(speedChooser.getSelected());
+        if (!lastSelectedSpeed.equals(speedChooser.getSelected())) {
+            speedMultiplier = Double.parseDouble(speedChooser.getSelected());
+        }
 
         if (SmartDashboard.getBoolean("Reset Encoders", false)) {
             SmartDashboard.putBoolean("Reset Encoders", false);
@@ -72,7 +76,7 @@ public class RobotContainer {
                                 drive.setChassisSpeeds(
                                         -scaledDeadBand(controller.getX()),
                                         -scaledDeadBand(controller.getY()),
-                                        -scaledDeadBand(controller.getTwist()),
+                                        -scaledDeadBand(controller.getTwist() * 0.8),
                                         false),
                         drive));
 
@@ -84,6 +88,12 @@ public class RobotContainer {
 
         controller.button(4).whileTrue(new StartEndCommand(manipulator::grab, manipulator::stop, manipulator));
         controller.button(6).whileTrue(new StartEndCommand(manipulator::release, manipulator::stop, manipulator));
+
+        controller.button(8).toggleOnTrue(
+                Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED)
+        ).toggleOnFalse(
+                Commands.runOnce(() -> speedMultiplier = 0.1)
+        );
     }
 
     private double scaledDeadBand(double value) {
