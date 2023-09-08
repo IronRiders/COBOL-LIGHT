@@ -103,6 +103,8 @@ public class DriveSubsystem extends SubsystemBase {
                                 yController.getSetpoint(),
                                 new Rotation2d(getThetaController().getSetpoint())));
 
+        SmartDashboard.putNumber("Gyro", pigeon.getAngle() % 360);
+
         // Tuning
         NetworkTableInstance.getDefault().flush();
 
@@ -188,6 +190,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose2d) {
         poseEstimator.resetPosition(pigeon.getRotation2d(), getWheelPositions(), pose2d);
+    }
+
+    public void resetPigeon() {
+        pigeon.setYaw(0.0);
     }
 
     public MecanumDrivePoseEstimator getPoseEstimator() {

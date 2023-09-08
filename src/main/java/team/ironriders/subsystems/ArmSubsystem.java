@@ -37,8 +37,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         SmartDashboard.putData(pivotSpeedChooser);
         SmartDashboard.putData(climberSpeedChooser);
-        SmartDashboard.putBoolean("Pivot", false);
-        SmartDashboard.putBoolean("Climber", false);
+        SmartDashboard.putBoolean("Pivot", true);
+        SmartDashboard.putBoolean("Climber", true);
     }
 
     @Override
@@ -47,16 +47,18 @@ public class ArmSubsystem extends SubsystemBase {
         climberMultiplier = Double.parseDouble(climberSpeedChooser.getSelected());
 
         SmartDashboard.putNumber("Pivot Rotation", pivotMotor.getEncoder().getPosition());
-        SmartDashboard.putNumber("Climber Rotation", pivotMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("Climber Rotation", climberMotor.getEncoder().getPosition());
+        // System.out.print(pivotMotor.getEncoder().getPosition());
+        // System.out.print(climberMotor.getEncoder().getPosition());
     }
 
     public void raise() {
-        if (pivotMotor.getEncoder().getPosition() > 1.5 || !SmartDashboard.getBoolean("Pivot", false)) { return; }
+        if (!SmartDashboard.getBoolean("Pivot", false)) { return; }
         pivotMotor.set(pivotMultiplier);
     }
 
     public void lower() {
-        if (pivotMotor.getEncoder().getPosition() < 0.35 || !SmartDashboard.getBoolean("Pivot", false)) { return; }
+        if (!SmartDashboard.getBoolean("Pivot", false)) { return; }
         pivotMotor.set(-pivotMultiplier);
     }
 

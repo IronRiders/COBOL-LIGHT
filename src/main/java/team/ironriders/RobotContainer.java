@@ -6,6 +6,9 @@
 package team.ironriders;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,6 +50,7 @@ public class RobotContainer {
         if (SmartDashboard.getBoolean("Reset Encoders", false)) {
             SmartDashboard.putBoolean("Reset Encoders", false);
             arm.resetEncoders();
+            drive.resetPigeon();
         }
         SmartDashboard.putNumber("Volts", pdh.getVoltage());
 

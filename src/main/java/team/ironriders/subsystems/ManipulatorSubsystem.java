@@ -30,7 +30,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
         }
 
         SmartDashboard.putData(manipulatorSpeedChooser);
-        SmartDashboard.putBoolean("Manipulator", false);
+        SmartDashboard.putBoolean("Manipulator", true);
     }
 
     @Override

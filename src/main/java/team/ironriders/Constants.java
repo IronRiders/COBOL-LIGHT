@@ -8,7 +8,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   // Joystick
-  public static final double DEADBAND = 0.12;
+  public static final double DEADBAND = 0.2;
   public static final double EXPONENT = 0.1; // between 0 and 1
 
   // Drivetrain
@@ -107,4 +107,10 @@ public final class Constants {
   public static final double MANIPULATOR_SETPOINT = 0.0;
   public static final double STALL_CURRENT = 1.2;
   public static final double STALL_SPEED = 0.0005;
+
+  // Speeds
+  public static final double DRIVE_SPEED = 0.5;
+  public static final double PIVOT_SPEED = 0.6;
+  public static final double MANIPULATOR_SPEED = 0.3;
+  public static final double CLIMBER_SPEED = 0.7;
 }
