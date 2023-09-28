@@ -37,7 +37,7 @@ public class RobotContainer {
     private double speedMultiplier = Constants.DRIVE_SPEED;
     PowerDistribution pdh = new PowerDistribution(13, PowerDistribution.ModuleType.kRev);
     SendableChooser<String> speedChooser = new SendableChooser<>();
-    String lastSelectedSpeed = speedChooser.getSelected();
+    String lastSelectedSpeed = String.valueOf(Constants.DRIVE_SPEED);
 
     public RobotContainer() {
         // Configure the trigger bindings
@@ -49,6 +49,7 @@ public class RobotContainer {
     public void periodic() {
         if (!lastSelectedSpeed.equals(speedChooser.getSelected())) {
             speedMultiplier = Double.parseDouble(speedChooser.getSelected());
+            lastSelectedSpeed = String.valueOf(speedMultiplier);
         }
 
         if (SmartDashboard.getBoolean("Reset Encoders", false)) {
@@ -92,7 +93,7 @@ public class RobotContainer {
         controller.button(8).toggleOnTrue(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED)
         ).toggleOnFalse(
-                Commands.runOnce(() -> speedMultiplier = 0.1)
+                Commands.runOnce(() -> speedMultiplier = 0.2)
         );
     }
 

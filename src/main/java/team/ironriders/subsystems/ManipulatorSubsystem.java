@@ -24,7 +24,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
         manipulatorLeftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         manipulatorLeftMotor.setSmartCurrentLimit(Constants.MANIPULATOR_CURRENT_LIMIT);
 
-        manipulatorSpeedChooser.setDefaultOption("Speed 0.1", "0.1");
+        manipulatorSpeedChooser.setDefaultOption("Speed 0.1", String.valueOf(Constants.MANIPULATOR_SPEED));
         for (double i = 0.2; i < 1; i += 0.1) {
             manipulatorSpeedChooser.addOption(String.format("Speed %.1f", i), String.valueOf(i));
         }
