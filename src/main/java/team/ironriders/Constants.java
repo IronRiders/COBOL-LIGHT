@@ -8,7 +8,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   // Joystick
-  public static final double DEADBAND = 0.4;
+  public static final double DEADBAND = 0.2;
   public static final double EXPONENT = 0.1; // between 0 and 1
 
   // Drivetrain
@@ -65,7 +65,6 @@ public final class Constants {
           new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)));
 
   // Arm
-  // TODO test current
   public static final int ARM_CURRENT_LIMIT = 7;
   public static final double Arm_POWER = 0.9;
   public static final double ARM_KP = 0.6;
@@ -98,7 +97,7 @@ public final class Constants {
   public static final double PIVOT_KA = 0;
 
   // Manipulator
-  public static final int MANIPULATOR_CURRENT_LIMIT = 6;
+  public static final int MANIPULATOR_CURRENT_LIMIT = 2;
   public static final double MANIPULATOR_SPEED_CONE = 0.3;
   public static final double MANIPULATOR_SPEED_BOX = 0.2;
   public static final double MANIPULATOR_PID_KP = 0.0;

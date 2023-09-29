@@ -42,8 +42,6 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the trigger bindings
         configureBindings();
-
-        SmartDashboard.putBoolean("Reset Encoders", false);
     }
 
     public void periodic() {
@@ -56,6 +54,7 @@ public class RobotContainer {
             SmartDashboard.putBoolean("Reset Encoders", false);
             arm.resetEncoders();
             drive.resetPigeon();
+            manipulator.resetEncoders();
         }
         SmartDashboard.putNumber("Volts", pdh.getVoltage());
 
@@ -65,7 +64,7 @@ public class RobotContainer {
 
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings() {
-        speedChooser.setDefaultOption("Speed 0.1", "0.1");
+        speedChooser.setDefaultOption("Default", "0.1");
         for (double i = 0.2; i < 1; i += 0.1) {
             speedChooser.addOption(String.format("Speed %.1f", i), String.valueOf(i));
         }

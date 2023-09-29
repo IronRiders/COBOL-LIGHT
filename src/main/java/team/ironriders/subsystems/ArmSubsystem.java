@@ -19,26 +19,18 @@ public class ArmSubsystem extends SubsystemBase {
     public ArmSubsystem() {
         pivotMotor = new CANSparkMax(5, CANSparkMaxLowLevel.MotorType.kBrushless);
         pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 1.76f);
-        pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0.08f);
-        pivotMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        pivotMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
         pivotMotor.setSmartCurrentLimit(Constants.PIVOT_CURRENT_LIMIT);
 
         climberMotor = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
         climberMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        climberMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 0f);
-        climberMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, -220f);
-        climberMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        climberMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
         climberMotor.setSmartCurrentLimit(Constants.ARM_CURRENT_LIMIT);
 
-        pivotSpeedChooser.setDefaultOption("Speed 0.1", String.valueOf(Constants.PIVOT_SPEED));
+        pivotSpeedChooser.setDefaultOption("Default", String.valueOf(Constants.PIVOT_SPEED));
         for (double i = 0.2; i < 1; i += 0.1) {
             pivotSpeedChooser.addOption(String.format("Speed %.1f", i), String.valueOf(i));
         }
 
-        climberSpeedChooser.setDefaultOption("Speed 0.1", String.valueOf(Constants.CLIMBER_SPEED));
+        climberSpeedChooser.setDefaultOption("Default", String.valueOf(Constants.CLIMBER_SPEED));
         for (double i = 0.2; i < 1; i += 0.1) {
             climberSpeedChooser.addOption(String.format("Speed %.1f", i), String.valueOf(i));
         }
@@ -56,6 +48,26 @@ public class ArmSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Pivot Rotation", pivotMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Climber Extension", climberMotor.getEncoder().getPosition() * -1);
+
+        pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 1.5f);
+        // disables pivot in when climber is extended further than 35
+        if (climberMotor.getEncoder().getPosition() * -1 > 35 && pivotMotor.getEncoder().getPosition() < 0.6f) {
+            pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 1.5f);
+        } else {
+            pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0f);
+        }
+        pivotMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        pivotMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+
+        climberMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 0f);
+        // disables climber from extending out when pivot is lower than 0.5
+        if (pivotMotor.getEncoder().getPosition() < 0.5) {
+            climberMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0f);
+        } else {
+            climberMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, -220f);
+        }
+        climberMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        climberMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
     }
 
     public void raise() {

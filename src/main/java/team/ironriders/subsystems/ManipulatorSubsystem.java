@@ -12,6 +12,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
     private final CANSparkMax manipulatorLeftMotor;
     SendableChooser<String> manipulatorSpeedChooser = new SendableChooser<>();
     double speedMultiplier = 0.1;
+    boolean ignoreHighCurrent = false;
 
     public ManipulatorSubsystem() {
         manipulatorRightMotor = new CANSparkMax(Constants.MANIPULATOR_PORT1, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -24,7 +25,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
         manipulatorLeftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         manipulatorLeftMotor.setSmartCurrentLimit(Constants.MANIPULATOR_CURRENT_LIMIT);
 
-        manipulatorSpeedChooser.setDefaultOption("Speed 0.1", String.valueOf(Constants.MANIPULATOR_SPEED));
+        manipulatorSpeedChooser.setDefaultOption("Default", String.valueOf(Constants.MANIPULATOR_SPEED));
         for (double i = 0.2; i < 1; i += 0.1) {
             manipulatorSpeedChooser.addOption(String.format("Speed %.1f", i), String.valueOf(i));
         }
@@ -36,6 +37,43 @@ public class ManipulatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         speedMultiplier = Double.parseDouble(manipulatorSpeedChooser.getSelected());
+
+        manipulatorRightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 0);
+        manipulatorRightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, -30);
+        manipulatorLeftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 0);
+        manipulatorLeftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, -30);
+
+        // This needs to be here so that if the robot starts up without redeploying the soft limits are enabled
+        boolean enabled = true;
+        manipulatorRightMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, enabled);
+        manipulatorRightMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, enabled);
+        manipulatorLeftMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, enabled);
+        manipulatorLeftMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, enabled);
+
+        double rightPos = manipulatorRightMotor.getEncoder().getPosition() * -1;
+        double leftPos = manipulatorLeftMotor.getEncoder().getPosition() * -1;
+
+        /*
+        it is impossible to check for stalls from the current alone
+
+        double rightCur = manipulatorRightMotor.getOutputCurrent();
+        double leftCur = manipulatorLeftMotor.getOutputCurrent();
+
+        double maxCur = 10;
+        // If one of the manipulator motors stalls, and it is not being ignored
+        if (!ignoreHighCurrent) {
+            // Only stops the stalling manipulator and stops it
+            if (rightCur > maxCur) {
+                manipulatorLeftMotor.set(0);
+            }
+            if (leftCur > maxCur) {
+                manipulatorLeftMotor.set(0);
+            }
+        }
+         */
+
+        // SmartDashboard.putNumber("Manipulator Right", rightPos);
+        // SmartDashboard.putNumber("Manipulator Left", leftPos);
     }
 
     public void grab() {
@@ -55,6 +93,11 @@ public class ManipulatorSubsystem extends SubsystemBase {
 
     public void stop() {
         setManipulatorMotors(0);
+    }
+
+    public void resetEncoders() {
+        manipulatorRightMotor.getEncoder().setPosition(0);
+        manipulatorLeftMotor.getEncoder().setPosition(0);
     }
 
     public void burnFlash() {
