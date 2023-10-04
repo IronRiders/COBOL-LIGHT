@@ -9,7 +9,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   // Joystick
   public static final double DEADBAND = 0.2;
-  public static final double EXPONENT = 0.1; // between 0 and 1
+  public static final double EXPONENT = 0.15; // between 0 and 1
 
   // Drivetrain
   public static final double DRIVE_SPEED_MULT = 1.0;
@@ -74,7 +74,7 @@ public final class Constants {
 
   // Pivot Stuff
   public static final int PIVOT_CURRENT_LIMIT = 12;
-  public static final double Pivot_KP = 24;
+  public static final double Pivot_KP = 10;
   public static final double Pivot_KI = 0;
   public static final double Pivot_KD = 0;
   public static final double SHOULDER_VELOCITY_DEG = 70;
@@ -109,7 +109,8 @@ public final class Constants {
   public static final double STALL_SPEED = 0.0005;
 
   // Speeds
-  public static final double DRIVE_SPEED = 0.5;
+  public static final double DRIVE_SPEED_FAST = 0.5;
+  public static final double DRIVE_SPEED_SLOW = 0.2;
   public static final double PIVOT_SPEED = 0.6;
   public static final double MANIPULATOR_SPEED = 0.3;
   public static final double CLIMBER_SPEED = 0.7;

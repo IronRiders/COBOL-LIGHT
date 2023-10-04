@@ -2,10 +2,16 @@ package team.ironriders.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team.ironriders.Constants;
+
+import java.util.Optional;
 
 public class ArmSubsystem extends SubsystemBase {
     SendableChooser<String> pivotSpeedChooser = new SendableChooser<>();
@@ -15,6 +21,24 @@ public class ArmSubsystem extends SubsystemBase {
     private final CANSparkMax climberMotor;
     private double pivotMultiplier = 0.1;
     private double climberMultiplier = 0.1;
+    private boolean usingPIDPivot = false;
+    private double pivotTarget = 0;
+    private boolean usingPIDClimber = false;
+    private double climberTarget = 0;
+
+    private final ProfiledPIDController pivotPID = new ProfiledPIDController(
+            Constants.Pivot_KP,
+            0,
+                    0,
+                    new TrapezoidProfile.Constraints(
+                    Units.degreesToRadians(Constants.SHOULDER_VELOCITY_DEG),
+                Units.degreesToRadians(Constants.SHOULDER_ACCELERATION_DEG)));
+
+    private final ProfiledPIDController climberPID = new ProfiledPIDController(
+            Constants.ARM_KP,
+            0,
+            0,
+            Constants.kConstraints);
 
     public ArmSubsystem() {
         pivotMotor = new CANSparkMax(5, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -43,6 +67,16 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (usingPIDPivot) {
+            double result = pivotPID.calculate(pivotMotor.getEncoder().getPosition(), pivotTarget);
+            pivotMotor.set(MathUtil.clamp(result, -1, 1) * pivotMultiplier);
+        }
+        if (usingPIDClimber) {
+            double result = climberPID.calculate(-climberMotor.getEncoder().getPosition(), climberTarget);
+            climberMotor.set(MathUtil.clamp(result, -1, 1) * climberMultiplier);
+            SmartDashboard.putNumber("pid", climberTarget);
+        }
+
         pivotMultiplier = Double.parseDouble(pivotSpeedChooser.getSelected());
         climberMultiplier = Double.parseDouble(climberSpeedChooser.getSelected());
 
@@ -51,7 +85,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 1.5f);
         // disables pivot in when climber is extended further than 35
-        if (climberMotor.getEncoder().getPosition() * -1 > 35 && pivotMotor.getEncoder().getPosition() < 0.6f) {
+        if (climberMotor.getEncoder().getPosition() * -1 > 35 && pivotMotor.getEncoder().getPosition() < 0.75f) {
             pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 1.5f);
         } else {
             pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0f);
@@ -72,30 +106,46 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void raise() {
         if (!SmartDashboard.getBoolean("Pivot", false)) { return; }
+        usingPIDPivot = false;
         pivotMotor.set(pivotMultiplier);
     }
 
     public void lower() {
         if (!SmartDashboard.getBoolean("Pivot", false)) { return; }
+        usingPIDPivot = false;
         pivotMotor.set(-pivotMultiplier);
+    }
+
+    public void setPivot(double target) {
+        usingPIDPivot = true;
+        pivotTarget = target;
+    }
+
+    public void stopPivot() {
+        pivotMotor.set(0);
+        usingPIDPivot = false;
     }
 
     public void retract() {
         if (!SmartDashboard.getBoolean("Climber", false)) { return; }
+        usingPIDClimber = false;
         climberMotor.set(climberMultiplier);
     }
 
     public void extend() {
         if (!SmartDashboard.getBoolean("Climber", false)) { return; }
+        usingPIDClimber = false;
         climberMotor.set(-climberMultiplier);
     }
 
-    public void stopPivot() {
-        pivotMotor.set(0);
+    public void setClimber(double target) {
+        usingPIDClimber = true;
+        climberTarget = target;
     }
 
     public void stopClimber() {
         climberMotor.set(0);
+        usingPIDClimber = false;
     }
 
     public void resetEncoders() {

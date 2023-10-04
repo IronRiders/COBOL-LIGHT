@@ -12,7 +12,6 @@ public class ManipulatorSubsystem extends SubsystemBase {
     private final CANSparkMax manipulatorLeftMotor;
     SendableChooser<String> manipulatorSpeedChooser = new SendableChooser<>();
     double speedMultiplier = 0.1;
-    boolean ignoreHighCurrent = false;
 
     public ManipulatorSubsystem() {
         manipulatorRightMotor = new CANSparkMax(Constants.MANIPULATOR_PORT1, CANSparkMaxLowLevel.MotorType.kBrushless);

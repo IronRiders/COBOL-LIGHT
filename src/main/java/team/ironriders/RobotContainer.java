@@ -12,10 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import team.ironriders.subsystems.ArmSubsystem;
 import team.ironriders.subsystems.DriveSubsystem;
@@ -34,10 +31,10 @@ public class RobotContainer {
     public final DriveSubsystem drive = new DriveSubsystem();
     public final ManipulatorSubsystem manipulator = new ManipulatorSubsystem();
     private final CommandJoystick controller = new CommandJoystick(0);
-    private double speedMultiplier = Constants.DRIVE_SPEED;
+    private double speedMultiplier = Constants.DRIVE_SPEED_SLOW;
     PowerDistribution pdh = new PowerDistribution(13, PowerDistribution.ModuleType.kRev);
     SendableChooser<String> speedChooser = new SendableChooser<>();
-    String lastSelectedSpeed = String.valueOf(Constants.DRIVE_SPEED);
+    String lastSelectedSpeed = String.valueOf(Constants.DRIVE_SPEED_SLOW);
 
     public RobotContainer() {
         // Configure the trigger bindings
@@ -57,7 +54,6 @@ public class RobotContainer {
             manipulator.resetEncoders();
         }
         SmartDashboard.putNumber("Volts", pdh.getVoltage());
-
         lights.setChassisSpeeds(drive.getChassisSpeeds());
     }
 
@@ -89,10 +85,16 @@ public class RobotContainer {
         controller.button(4).whileTrue(new StartEndCommand(manipulator::grab, manipulator::stop, manipulator));
         controller.button(6).whileTrue(new StartEndCommand(manipulator::release, manipulator::stop, manipulator));
 
-        controller.button(8).toggleOnTrue(
-                Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED)
-        ).toggleOnFalse(
-                Commands.runOnce(() -> speedMultiplier = 0.2)
+        controller.button(9).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.3, 220)));
+        controller.button(10).onTrue(Commands.runOnce(() -> pivotClimberPreset(0, 1)));
+
+        controller.button(11).onTrue(Commands.runOnce(() -> arm.setClimber(0)));
+        controller.button(12).onTrue(Commands.runOnce(() -> arm.setClimber(200)));
+
+        controller.button(8).onTrue(
+                Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_FAST)
+        ).onFalse(
+                Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_SLOW)
         );
     }
 
@@ -101,6 +103,10 @@ public class RobotContainer {
         return Math.signum(value1) * Math.pow(Math.abs(value1), 1) * speedMultiplier;
     }
 
+    private void pivotClimberPreset(double pivot, double climber) {
+        arm.setPivot(pivot);
+        arm.setClimber(climber);
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
