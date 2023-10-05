@@ -97,6 +97,8 @@ public class RobotContainer {
 
         // human player
         controller.button(8).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.5, 50)));
+        // resting
+        controller.button(12).onTrue(Commands.runOnce(() -> pivotClimberPreset(0, 0)));
 
         // boost
         controller.button(1).onTrue(
@@ -105,7 +107,7 @@ public class RobotContainer {
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_SLOW)
         );
         // boost alt
-        controller.button(12).onTrue(
+        controller.button(10).onTrue(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_FAST)
         ).onFalse(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_SLOW)
