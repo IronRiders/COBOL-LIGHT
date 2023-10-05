@@ -6,13 +6,13 @@
 package team.ironriders;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import team.ironriders.subsystems.ArmSubsystem;
 import team.ironriders.subsystems.DriveSubsystem;
@@ -76,27 +76,36 @@ public class RobotContainer {
                                         false),
                         drive));
 
+        // pivot (up, down)
         controller.button(3).whileTrue(new StartEndCommand(arm::lower, arm::stopPivot, arm));
         controller.button(5).whileTrue(new StartEndCommand(arm::raise, arm::stopPivot, arm));
 
+        // climber (in, out)
         controller.povDown().whileTrue(new StartEndCommand(arm::retract, arm::stopClimber, arm));
         controller.povUp().whileTrue(new StartEndCommand(arm::extend, arm::stopClimber, arm));
 
+        // manipulator (in, out)
         controller.button(4).whileTrue(new StartEndCommand(manipulator::grab, manipulator::stop, manipulator));
         controller.button(6).whileTrue(new StartEndCommand(manipulator::release, manipulator::stop, manipulator));
 
-        controller.button(9).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.3, 220)));
-        controller.button(10).onTrue(Commands.runOnce(() -> pivotClimberPreset(0, 1)));
+        // l3
+        controller.button(7).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.5, 220)));
+        // l2
+        controller.button(9).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.2, 80)));
+        // l1
+        controller.button(11).onTrue(Commands.runOnce(() -> pivotClimberPreset(0.6, 30)));
 
-        controller.button(11).onTrue(Commands.runOnce(() -> arm.setClimber(100), arm));
-        controller.button(12).onTrue(Commands.runOnce(() -> arm.setClimber(0), arm));
+        // human player
+        controller.button(8).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.5, 50)));
 
-        controller.button(8).onTrue(
+        // boost
+        controller.button(1).onTrue(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_FAST)
         ).onFalse(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_SLOW)
         );
-        controller.button(1).onTrue(
+        // boost alt
+        controller.button(12).onTrue(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_FAST)
         ).onFalse(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_SLOW)

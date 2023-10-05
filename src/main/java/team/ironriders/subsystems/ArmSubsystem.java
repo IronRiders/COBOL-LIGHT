@@ -6,13 +6,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team.ironriders.Constants;
-
-import java.util.Optional;
 
 public class ArmSubsystem extends SubsystemBase {
     SendableChooser<String> pivotSpeedChooser = new SendableChooser<>();
@@ -141,6 +138,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setClimber(double target) {
         usingPIDClimber = true;
+        climberPID.reset(0);
         climberTarget = target;
     }
 
