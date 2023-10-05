@@ -88,10 +88,15 @@ public class RobotContainer {
         controller.button(9).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.3, 220)));
         controller.button(10).onTrue(Commands.runOnce(() -> pivotClimberPreset(0, 1)));
 
-        controller.button(11).onTrue(Commands.runOnce(() -> arm.setClimber(0)));
-        controller.button(12).onTrue(Commands.runOnce(() -> arm.setClimber(200)));
+        controller.button(11).onTrue(Commands.runOnce(() -> arm.setClimber(100), arm));
+        controller.button(12).onTrue(Commands.runOnce(() -> arm.setClimber(0), arm));
 
         controller.button(8).onTrue(
+                Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_FAST)
+        ).onFalse(
+                Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_SLOW)
+        );
+        controller.button(1).onTrue(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_FAST)
         ).onFalse(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_SLOW)

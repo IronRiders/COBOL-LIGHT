@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -72,9 +73,9 @@ public class ArmSubsystem extends SubsystemBase {
             pivotMotor.set(MathUtil.clamp(result, -1, 1) * pivotMultiplier);
         }
         if (usingPIDClimber) {
-            double result = climberPID.calculate(-climberMotor.getEncoder().getPosition(), climberTarget);
-            climberMotor.set(MathUtil.clamp(result, -1, 1) * climberMultiplier);
-            SmartDashboard.putNumber("pid", climberTarget);
+            double result = climberPID.calculate(climberMotor.getEncoder().getPosition(), -climberTarget);
+            SmartDashboard.putNumber("pid", result);
+            climberMotor.set(MathUtil.clamp(result, -1, 1) * climberMultiplier * 1.5);
         }
 
         pivotMultiplier = Double.parseDouble(pivotSpeedChooser.getSelected());

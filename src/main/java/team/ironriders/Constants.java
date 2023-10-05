@@ -67,7 +67,7 @@ public final class Constants {
   // Arm
   public static final int ARM_CURRENT_LIMIT = 7;
   public static final double Arm_POWER = 0.9;
-  public static final double ARM_KP = 0.6;
+  public static final double ARM_KP = 0.1;
   public static final double Arm_GEAR_RATIO = 48;
   public static final TrapezoidProfile.Constraints kConstraints =
       new TrapezoidProfile.Constraints(75, 120);
