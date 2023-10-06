@@ -3,13 +3,14 @@ package team.ironriders.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team.ironriders.Constants;
+import team.ironriders.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
     SendableChooser<String> pivotSpeedChooser = new SendableChooser<>();
@@ -32,11 +33,10 @@ public class ArmSubsystem extends SubsystemBase {
                     Units.degreesToRadians(Constants.SHOULDER_VELOCITY_DEG),
                 Units.degreesToRadians(Constants.SHOULDER_ACCELERATION_DEG)));
 
-    private final ProfiledPIDController climberPID = new ProfiledPIDController(
+    private final PIDController climberPID = new PIDController(
             Constants.ARM_KP,
             0,
-            0,
-            Constants.kConstraints);
+            0);
 
     public ArmSubsystem() {
         pivotMotor = new CANSparkMax(5, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -72,7 +72,7 @@ public class ArmSubsystem extends SubsystemBase {
         if (usingPIDClimber) {
             double result = climberPID.calculate(climberMotor.getEncoder().getPosition(), -climberTarget);
             SmartDashboard.putNumber("pid", result);
-            climberMotor.set(MathUtil.clamp(result, -1, 1) * climberMultiplier * 1.5);
+            climberMotor.set(MathUtil.clamp(result, -1, 1) * climberMultiplier);
         }
 
         pivotMultiplier = Double.parseDouble(pivotSpeedChooser.getSelected());
@@ -114,6 +114,10 @@ public class ArmSubsystem extends SubsystemBase {
         pivotMotor.set(-pivotMultiplier);
     }
 
+    public double getPivotPos() {
+        return pivotMotor.getEncoder().getPosition();
+    }
+
     public void setPivot(double target) {
         usingPIDPivot = true;
         pivotTarget = target;
@@ -138,8 +142,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setClimber(double target) {
         usingPIDClimber = true;
-        climberPID.reset(0);
         climberTarget = target;
+    }
+
+    public double getClimberPos() {
+        return climberMotor.getEncoder().getPosition();
     }
 
     public void stopClimber() {

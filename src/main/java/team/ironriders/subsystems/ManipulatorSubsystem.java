@@ -1,11 +1,11 @@
 package team.ironriders.subsystems;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.revrobotics.CANSparkMax;
-import team.ironriders.Constants;
+import team.ironriders.robot.Constants;
 
 public class ManipulatorSubsystem extends SubsystemBase {
     private final CANSparkMax manipulatorRightMotor;

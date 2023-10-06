@@ -3,7 +3,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package team.ironriders;
+package team.ironriders.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import team.ironriders.commands.PivotClimberMoveCommand;
 import team.ironriders.subsystems.ArmSubsystem;
 import team.ironriders.subsystems.DriveSubsystem;
 import team.ironriders.subsystems.LightsSubsystem;
@@ -60,7 +61,7 @@ public class RobotContainer {
 
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings() {
-        speedChooser.setDefaultOption("Default", "0.1");
+        speedChooser.setDefaultOption("Default", "0.2");
         for (double i = 0.2; i < 1; i += 0.1) {
             speedChooser.addOption(String.format("Speed %.1f", i), String.valueOf(i));
         }
@@ -89,16 +90,16 @@ public class RobotContainer {
         controller.button(6).whileTrue(new StartEndCommand(manipulator::release, manipulator::stop, manipulator));
 
         // l3
-        controller.button(7).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.5, 220)));
+        controller.button(7).onTrue(new PivotClimberMoveCommand(1.5, 220, arm));
         // l2
-        controller.button(9).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.2, 80)));
+        controller.button(9).onTrue(new PivotClimberMoveCommand(1.2, 80, arm));
         // l1
-        controller.button(11).onTrue(Commands.runOnce(() -> pivotClimberPreset(0.6, 30)));
+        controller.button(11).onTrue(new PivotClimberMoveCommand(0.6, 30, arm));
 
         // human player
-        controller.button(8).onTrue(Commands.runOnce(() -> pivotClimberPreset(1.5, 50)));
+        controller.button(8).onTrue(new PivotClimberMoveCommand(1.5, 50, arm));
         // resting
-        controller.button(12).onTrue(Commands.runOnce(() -> pivotClimberPreset(0, 0)));
+        controller.button(12).onTrue(new PivotClimberMoveCommand(0, 0, arm));
 
         // boost
         controller.button(1).onTrue(
@@ -119,18 +120,12 @@ public class RobotContainer {
         return Math.signum(value1) * Math.pow(Math.abs(value1), 1) * speedMultiplier;
     }
 
-    private void pivotClimberPreset(double pivot, double climber) {
-        arm.setPivot(pivot);
-        arm.setClimber(climber);
-    }
-
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // TODO: Implement properly
-        return null;
+        return new PivotClimberMoveCommand(0, 0, arm);
     }
 }
