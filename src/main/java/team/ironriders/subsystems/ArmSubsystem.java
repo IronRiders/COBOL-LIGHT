@@ -146,7 +146,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getClimberPos() {
-        return climberMotor.getEncoder().getPosition();
+        return -climberMotor.getEncoder().getPosition();
     }
 
     public void stopClimber() {

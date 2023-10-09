@@ -49,8 +49,8 @@ public class ManipulatorSubsystem extends SubsystemBase {
         manipulatorLeftMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, enabled);
         manipulatorLeftMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, enabled);
 
-        double rightPos = manipulatorRightMotor.getEncoder().getPosition() * -1;
-        double leftPos = manipulatorLeftMotor.getEncoder().getPosition() * -1;
+        // double rightPos = manipulatorRightMotor.getEncoder().getPosition() * -1;
+        // double leftPos = manipulatorLeftMotor.getEncoder().getPosition() * -1;
 
         /*
         it is impossible to check for stalls from the current alone
@@ -76,22 +76,30 @@ public class ManipulatorSubsystem extends SubsystemBase {
     }
 
     public void grab() {
-        setManipulatorMotors(-speedMultiplier);
+        setManipulatorMotors(-1);
     }
 
     public void release() {
-        setManipulatorMotors(speedMultiplier);
+        setManipulatorMotors(1);
     }
 
     public void setManipulatorMotors(double speed) {
         if (!SmartDashboard.getBoolean("Manipulator", false)) { return; }
 
-        manipulatorRightMotor.set(speed * 0.5);
-        manipulatorLeftMotor.set(speed * 0.5);
+        manipulatorRightMotor.set(speed * 0.5 * speedMultiplier);
+        manipulatorLeftMotor.set(speed * 0.5 * speedMultiplier);
     }
 
     public void stop() {
         setManipulatorMotors(0);
+    }
+
+    public double getRightPos() {
+        return manipulatorRightMotor.getEncoder().getPosition();
+    }
+
+    public double getLeftPos() {
+        return manipulatorLeftMotor.getEncoder().getPosition();
     }
 
     public void resetEncoders() {
