@@ -17,7 +17,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team.ironriders.robot.Constants;
+import team.ironriders.constants.Constants;
 
 public class DriveSubsystem extends SubsystemBase {
     private boolean inverted;
@@ -180,8 +180,10 @@ public class DriveSubsystem extends SubsystemBase {
                                 MecanumWheelSubsystem.getMaxLinearVelocity(),
                                 -MecanumWheelSubsystem.getMaxLinearVelocity(),
                                 MecanumWheelSubsystem.getMaxLinearVelocity(),
-                                -MecanumWheelSubsystem.getMaxLinearVelocity())))
-                        .omegaRadiansPerSecond);
+                                -MecanumWheelSubsystem.getMaxLinearVelocity()
+                        )
+                )).omegaRadiansPerSecond
+        );
     }
 
     public void stop() {

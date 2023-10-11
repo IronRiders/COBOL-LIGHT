@@ -10,7 +10,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team.ironriders.robot.Constants;
+import team.ironriders.constants.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
     SendableChooser<String> pivotSpeedChooser = new SendableChooser<>();
@@ -67,7 +67,7 @@ public class ArmSubsystem extends SubsystemBase {
     public void periodic() {
         if (usingPIDPivot) {
             double result = pivotPID.calculate(pivotMotor.getEncoder().getPosition(), pivotTarget);
-            pivotMotor.set(MathUtil.clamp(result, -1, 1) * pivotMultiplier);
+            pivotMotor.set(MathUtil.clamp(result, -1, 1) * (pivotMultiplier + 0.2));
         }
         if (usingPIDClimber) {
             double result = climberPID.calculate(climberMotor.getEncoder().getPosition(), -climberTarget);
@@ -81,10 +81,10 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot Rotation", pivotMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Climber Extension", climberMotor.getEncoder().getPosition() * -1);
 
-        pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 1.5f);
+        pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 1.7f);
         // disables pivot in when climber is extended further than 35
         if (climberMotor.getEncoder().getPosition() * -1 > 35 && pivotMotor.getEncoder().getPosition() < 0.75f) {
-            pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 1.5f);
+            pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 1.7f);
         } else {
             pivotMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0f);
         }

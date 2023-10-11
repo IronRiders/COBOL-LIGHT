@@ -6,14 +6,6 @@ import team.ironriders.subsystems.ArmSubsystem;
 
 
 public class PivotClimberMoveCommand extends CommandBase {
-    public enum Preset {
-        L1,
-        L2,
-        L3,
-        HP,
-        R
-    }
-
     double pivotTarget;
     double climberTarget;
     ArmSubsystem arm;
@@ -21,35 +13,6 @@ public class PivotClimberMoveCommand extends CommandBase {
     public PivotClimberMoveCommand(double pivotTarget, double climberTarget, ArmSubsystem arm) {
         this.pivotTarget = pivotTarget;
         this.climberTarget = climberTarget;
-        this.arm = arm;
-
-        addRequirements(arm);
-    }
-
-    public PivotClimberMoveCommand(Preset preset, ArmSubsystem arm) {
-        switch (preset) {
-            case L1 -> {
-                this.pivotTarget = 0.6;
-                this.climberTarget = 30;
-            }
-            case L2 -> {
-                this.pivotTarget = 1.2;
-                this.climberTarget = 80;
-            }
-            case L3 -> {
-                this.pivotTarget = 1.5;
-                this.climberTarget = 220;
-            }
-            case HP -> {
-                this.pivotTarget = 1.5;
-                this.climberTarget = 50;
-            }
-            case R -> {
-                this.pivotTarget = 0;
-                this.climberTarget = 0;
-            }
-        }
-
         this.arm = arm;
 
         addRequirements(arm);

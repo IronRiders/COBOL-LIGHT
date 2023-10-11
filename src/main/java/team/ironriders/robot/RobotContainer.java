@@ -15,14 +15,14 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import team.ironriders.commands.AutoCommands;
-import team.ironriders.commands.PivotClimberMoveCommand;
+import team.ironriders.constants.Constants;
 import team.ironriders.subsystems.ArmSubsystem;
 import team.ironriders.subsystems.DriveSubsystem;
 import team.ironriders.subsystems.LightsSubsystem;
 import team.ironriders.subsystems.ManipulatorSubsystem;
 
-import static team.ironriders.commands.AutoCommands.AutoMode.PLACE_GAME_PIECE_L3;
-import static team.ironriders.commands.PivotClimberMoveCommand.Preset.*;
+import static team.ironriders.commands.AutoCommands.AutoMode.CUBE_L3;
+import static team.ironriders.constants.Commands.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -42,6 +42,7 @@ public class RobotContainer {
     String lastSelectedSpeed = String.valueOf(Constants.DRIVE_SPEED_SLOW);
 
     public RobotContainer() {
+
         // Configure the trigger bindings
         configureBindings();
     }
@@ -94,16 +95,16 @@ public class RobotContainer {
         controller.button(6).whileTrue(new StartEndCommand(manipulator::release, manipulator::stop, manipulator));
 
         // l3
-        controller.button(7).onTrue(new PivotClimberMoveCommand(L3, arm));
+        controller.button(7).onTrue(Cone.L3(arm));
         // l2
-        controller.button(9).onTrue(new PivotClimberMoveCommand(L2, arm));
+        controller.button(10).onTrue(Cone.L2(arm));
         // l1
-        controller.button(11).onTrue(new PivotClimberMoveCommand(L1, arm));
+        controller.button(11).onTrue(Cone.L1(arm));
 
         // human player
-        controller.button(8).onTrue(new PivotClimberMoveCommand(HP, arm));
+        controller.button(8).onTrue(HP(arm, manipulator));
         // resting
-        controller.button(12).onTrue(new PivotClimberMoveCommand(R, arm));
+        controller.button(12).onTrue(R(arm));
 
         // boost
         controller.button(1).onTrue(
@@ -112,7 +113,7 @@ public class RobotContainer {
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_SLOW)
         );
         // boost alt
-        controller.button(10).onTrue(
+        controller.button(9).onTrue(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_FAST)
         ).onFalse(
                 Commands.runOnce(() -> speedMultiplier = Constants.DRIVE_SPEED_SLOW)
@@ -130,6 +131,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new AutoCommands().getCommand(PLACE_GAME_PIECE_L3, arm, manipulator, drive);
+        return new AutoCommands().getCommand(CUBE_L3, arm, manipulator, drive);
     }
 }

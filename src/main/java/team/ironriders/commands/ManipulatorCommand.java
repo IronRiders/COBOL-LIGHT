@@ -31,9 +31,9 @@ public class ManipulatorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        double target = direction.equals(Direction.RELEASE) ? -26.5 : 0;
-        return Utils.isWithinTolerance(manipulator.getRightPos(), target, 1) &&
-                Utils.isWithinTolerance(manipulator.getLeftPos(), target, 1);
+        double target = direction.equals(Direction.RELEASE) ? -30 : 0;
+        return Utils.isWithinTolerance(manipulator.getRightPos(), target, 2) &&
+                Utils.isWithinTolerance(manipulator.getLeftPos(), target, 2);
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team.ironriders.robot.Constants;
+import team.ironriders.constants.Constants;
 
 public class MecanumWheelSubsystem extends SubsystemBase {
     private final CANSparkMax motor;

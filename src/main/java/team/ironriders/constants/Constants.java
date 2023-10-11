@@ -1,5 +1,6 @@
-package team.ironriders.robot;
+package team.ironriders.constants;
 
+import com.pathplanner.lib.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -43,6 +44,12 @@ public final class Constants {
   public static final double AUTO_YCONTROLLER_KP = 0;
   public static final double DRIVE_ACCELERATION_AUTO = 1;
   public static final double ANGLE_TOLERANCE = 1;
+
+  public static final PathConstraints SlowAutoConstraints = new PathConstraints(1, 1);
+  public static final PathConstraints MediumAutoConstraints = new PathConstraints(3, 2);
+  // public static final PathConstraints FastAutoConstraints = new PathConstraints(4, 4);
+  // public static final PathConstraints TooFastAutoConstraints = new PathConstraints(5, 5);
+  public static final double ANGLETOLERANCE = 1;
 
   // Auto Leveling
   public static final double FORWARD_VELOCITY = 0.065;
@@ -109,7 +116,7 @@ public final class Constants {
   public static final double STALL_SPEED = 0.0005;
 
   // Speeds
-  public static final double DRIVE_SPEED_FAST = 0.5;
+  public static final double DRIVE_SPEED_FAST = 0.7;
   public static final double DRIVE_SPEED_SLOW = 0.2;
   public static final double PIVOT_SPEED = 0.6;
   public static final double MANIPULATOR_SPEED = 0.3;
