@@ -3,6 +3,7 @@ package team.ironriders.subsystems;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,12 +18,13 @@ public class LightsSubsystem extends SubsystemBase {
         GREEN,
         YELLOW,
         RAINBOW,
+        TEAM,
         NOISE,
         CUSTOM
     }
 
     private static LightPattern lightPattern =
-            LightPattern.RAINBOW;
+            LightPattern.TEAM;
 
     AddressableLED addressableLed = new AddressableLED(0);
     AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(50);
@@ -41,6 +43,7 @@ public class LightsSubsystem extends SubsystemBase {
         addressableLed.setLength(ledBuffer.getLength());
 
         lightPatternChooser.setDefaultOption("Rainbow", "RAINBOW");
+        lightPatternChooser.addOption("Team", "TEAM");
         lightPatternChooser.addOption("Cone", "CONE");
         lightPatternChooser.addOption("Cube", "CUBE");
         lightPatternChooser.addOption("Green", "GREEN");
@@ -91,6 +94,13 @@ public class LightsSubsystem extends SubsystemBase {
             case RAINBOW:
                 rainbow();
                 break;
+            case TEAM:
+                 if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
+                     setColorRGB(255, 0, 0);
+                 } else {
+                     setColorRGB(0, 0, 255);
+                 }
+                 break;
             case NOISE:
                 noise();
                 break;
