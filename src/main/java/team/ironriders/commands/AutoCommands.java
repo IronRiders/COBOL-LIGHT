@@ -49,7 +49,7 @@ public class AutoCommands {
 
     private Command retract() {
         return new ClimberCommand(30, arm)
-                .andThen(R(arm))
+                .andThen(new PivotClimberMoveCommand(0, 0, arm))
                 .alongWith(
                         new MecanumPathFollower(drive, "test", Constants.SlowAutoConstraints, true)
                                 .unless(() -> !leaveCommunity)
