@@ -10,7 +10,7 @@ import team.ironriders.subsystems.ManipulatorSubsystem;
 
 public class Commands {
     public static CommandBase R(ArmSubsystem arm) {
-        return new PivotClimberMoveCommand(0.6, 30, arm);
+        return new PivotClimberMoveCommand(0.5, 30, arm);
     }
 
     public static CommandBase HP(ArmSubsystem arm, ManipulatorSubsystem manipulator) {
