@@ -7,19 +7,15 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team.ironriders.constants.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
-    SendableChooser<String> pivotSpeedChooser = new SendableChooser<>();
-    SendableChooser<String> climberSpeedChooser = new SendableChooser<>();
-
     private final CANSparkMax pivotMotor;
     private final CANSparkMax climberMotor;
-    private double pivotMultiplier = 0.1;
-    private double climberMultiplier = 0.1;
+    private final double pivotMultiplier = Constants.PIVOT_SPEED;
+    private final double climberMultiplier = Constants.CLIMBER_SPEED;
     private boolean usingPIDPivot = false;
     private double pivotTarget = 0;
     private boolean usingPIDClimber = false;
@@ -46,21 +42,6 @@ public class ArmSubsystem extends SubsystemBase {
         climberMotor = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
         climberMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         climberMotor.setSmartCurrentLimit(Constants.ARM_CURRENT_LIMIT);
-
-        pivotSpeedChooser.setDefaultOption("Default", String.valueOf(Constants.PIVOT_SPEED));
-        for (double i = 0.2; i < 1; i += 0.1) {
-            pivotSpeedChooser.addOption(String.format("Speed %.1f", i), String.valueOf(i));
-        }
-
-        climberSpeedChooser.setDefaultOption("Default", String.valueOf(Constants.CLIMBER_SPEED));
-        for (double i = 0.2; i < 1; i += 0.1) {
-            climberSpeedChooser.addOption(String.format("Speed %.1f", i), String.valueOf(i));
-        }
-
-        SmartDashboard.putData(pivotSpeedChooser);
-        SmartDashboard.putData(climberSpeedChooser);
-        SmartDashboard.putBoolean("Pivot", true);
-        SmartDashboard.putBoolean("Climber", true);
     }
 
     @Override
@@ -71,12 +52,8 @@ public class ArmSubsystem extends SubsystemBase {
         }
         if (usingPIDClimber) {
             double result = climberPID.calculate(climberMotor.getEncoder().getPosition(), -climberTarget);
-            SmartDashboard.putNumber("pid", result);
             climberMotor.set(MathUtil.clamp(result, -1, 1) * climberMultiplier);
         }
-
-        pivotMultiplier = Double.parseDouble(pivotSpeedChooser.getSelected());
-        climberMultiplier = Double.parseDouble(climberSpeedChooser.getSelected());
 
         SmartDashboard.putNumber("Pivot Rotation", pivotMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Climber Extension", climberMotor.getEncoder().getPosition() * -1);
@@ -103,13 +80,11 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void raise() {
-        if (!SmartDashboard.getBoolean("Pivot", false)) { return; }
         usingPIDPivot = false;
         pivotMotor.set(pivotMultiplier);
     }
 
     public void lower() {
-        if (!SmartDashboard.getBoolean("Pivot", false)) { return; }
         usingPIDPivot = false;
         pivotMotor.set(-pivotMultiplier);
     }
@@ -129,13 +104,11 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void retract() {
-        if (!SmartDashboard.getBoolean("Climber", false)) { return; }
         usingPIDClimber = false;
         climberMotor.set(climberMultiplier);
     }
 
     public void extend() {
-        if (!SmartDashboard.getBoolean("Climber", false)) { return; }
         usingPIDClimber = false;
         climberMotor.set(-climberMultiplier);
     }

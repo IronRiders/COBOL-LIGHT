@@ -21,7 +21,6 @@ import team.ironriders.subsystems.DriveSubsystem;
 import team.ironriders.subsystems.LightsSubsystem;
 import team.ironriders.subsystems.ManipulatorSubsystem;
 
-import static team.ironriders.commands.AutoCommands.AutoMode.CUBE_L3;
 import static team.ironriders.constants.Commands.*;
 
 /**
@@ -38,39 +37,32 @@ public class RobotContainer {
     private final CommandJoystick controller = new CommandJoystick(0);
     private double speedMultiplier = Constants.DRIVE_SPEED_SLOW;
     PowerDistribution pdh = new PowerDistribution(13, PowerDistribution.ModuleType.kRev);
-    SendableChooser<String> speedChooser = new SendableChooser<>();
-    String lastSelectedSpeed = String.valueOf(Constants.DRIVE_SPEED_SLOW);
+    SendableChooser<String> autoSelector = new SendableChooser<>();
+    SendableChooser<String> leaveCommunity = new SendableChooser<>();
 
     public RobotContainer() {
-
         // Configure the trigger bindings
         configureBindings();
     }
 
     public void periodic() {
-        if (!lastSelectedSpeed.equals(speedChooser.getSelected())) {
-            speedMultiplier = Double.parseDouble(speedChooser.getSelected());
-            lastSelectedSpeed = String.valueOf(speedMultiplier);
-        }
-
-        if (SmartDashboard.getBoolean("Reset Encoders", false)) {
-            SmartDashboard.putBoolean("Reset Encoders", false);
-            arm.resetEncoders();
-            drive.resetPigeon();
-            manipulator.resetEncoders();
-        }
         SmartDashboard.putNumber("Volts", pdh.getVoltage());
-        lights.setChassisSpeeds(drive.getChassisSpeeds());
     }
 
 
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings() {
-        speedChooser.setDefaultOption("Default", "0.2");
-        for (double i = 0.2; i < 1; i += 0.1) {
-            speedChooser.addOption(String.format("Speed %.1f", i), String.valueOf(i));
-        }
-        SmartDashboard.putData(speedChooser);
+        autoSelector.setDefaultOption("Cube L3", "CUBE_L3");
+        autoSelector.addOption("Cube L2", "CUBE_L2");
+        autoSelector.addOption("Cube L1", "CUBE_L1");
+        autoSelector.addOption("Cone L3", "CONE_L3");
+        autoSelector.addOption("Cone L2", "CONE_L2");
+        autoSelector.addOption("Cone L1", "CONE_L1");
+        SmartDashboard.putData(autoSelector);
+
+        leaveCommunity.setDefaultOption("True", "true");
+        leaveCommunity.addOption("False", "false");
+        SmartDashboard.putData(leaveCommunity);
 
         drive.setDefaultCommand(
                 new RunCommand(
@@ -131,6 +123,13 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new AutoCommands().getCommand(CUBE_L3, arm, manipulator, drive);
+        // Cube L3 leave community gives us the most points with the highest success rate
+        return new AutoCommands().getCommand(
+                AutoCommands.AutoModePiece.valueOf(autoSelector.getSelected()),
+                Boolean.parseBoolean(leaveCommunity.getSelected()),
+                arm,
+                manipulator,
+                drive
+        );
     }
 }

@@ -42,8 +42,8 @@ public class LightsSubsystem extends SubsystemBase {
     public LightsSubsystem() {
         addressableLed.setLength(ledBuffer.getLength());
 
-        lightPatternChooser.setDefaultOption("Rainbow", "RAINBOW");
-        lightPatternChooser.addOption("Team", "TEAM");
+        lightPatternChooser.addOption("Rainbow", "RAINBOW");
+        lightPatternChooser.setDefaultOption("Team", "TEAM");
         lightPatternChooser.addOption("Cone", "CONE");
         lightPatternChooser.addOption("Cube", "CUBE");
         lightPatternChooser.addOption("Green", "GREEN");
@@ -63,7 +63,6 @@ public class LightsSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Custom R", 255);
         SmartDashboard.putNumber("Custom G", 255);
         SmartDashboard.putNumber("Custom B", 255);
-        SmartDashboard.putBoolean("Velocity Based Brightness", false);
     }
 
     @Override
@@ -81,31 +80,19 @@ public class LightsSubsystem extends SubsystemBase {
         customB = (int) SmartDashboard.getNumber("Custom B", 255);
 
         switch (lightPattern) {
-            case CONE:
-            case YELLOW:
-                setColorRGB(255, 255, 0);
-                break;
-            case CUBE:
-                setColorRGB(255, 0, 255);
-                break;
-            case GREEN:
-                setColorRGB(0, 200, 0);
-                break;
-            case RAINBOW:
-                rainbow();
-                break;
-            case TEAM:
-                 if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
-                     setColorRGB(255, 0, 0);
-                 } else {
-                     setColorRGB(0, 0, 255);
-                 }
-                 break;
-            case NOISE:
-                noise();
-                break;
-            case CUSTOM:
-                setColorRGB(customR, customG, customB);
+            case CONE, YELLOW -> setColorRGB(255, 255, 0);
+            case CUBE -> setColorRGB(255, 0, 255);
+            case GREEN -> setColorRGB(0, 200, 0);
+            case RAINBOW -> rainbow();
+            case TEAM -> {
+                if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
+                    setColorRGB(255, 0, 0);
+                } else {
+                    setColorRGB(0, 0, 255);
+                }
+            }
+            case NOISE -> noise();
+            case CUSTOM -> setColorRGB(customR, customG, customB);
         }
         addressableLed.start();
     }

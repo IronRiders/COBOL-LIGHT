@@ -1,6 +1,7 @@
 package team.ironriders.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import team.ironriders.constants.Constants;
 import team.ironriders.subsystems.ArmSubsystem;
 import team.ironriders.subsystems.DriveSubsystem;
@@ -9,44 +10,39 @@ import team.ironriders.subsystems.ManipulatorSubsystem;
 import static team.ironriders.constants.Commands.*;
 
 public class AutoCommands {
-    public enum AutoMode {
+    public enum AutoModePiece {
         CUBE_L1,
         CUBE_L2,
-        CUBE_L3
+        CUBE_L3,
+        CONE_L1,
+        CONE_L2,
+        CONE_L3
     }
 
     ArmSubsystem arm;
     ManipulatorSubsystem manipulator;
     DriveSubsystem drive;
+    boolean leaveCommunity;
 
-    public Command getCommand(AutoMode autoMode, ArmSubsystem arm, ManipulatorSubsystem manipulator,
-                              DriveSubsystem drive) {
+    public Command getCommand(AutoModePiece autoMode, boolean leaveCommunity, ArmSubsystem arm,
+                              ManipulatorSubsystem manipulator, DriveSubsystem drive) {
         this.arm = arm;
         this.manipulator = manipulator;
         this.drive = drive;
+        this.leaveCommunity = leaveCommunity;
 
         return switch (autoMode) {
-            case CUBE_L1 -> placeL1();
-            case CUBE_L2 -> placeL2();
-            case CUBE_L3 -> placeL3();
-            default -> null;
+            case CUBE_L1 -> genericPlace(Cube.L1(arm));
+            case CUBE_L2 -> genericPlace(Cube.L2(arm));
+            case CUBE_L3 -> genericPlace(Cube.L3(arm));
+            case CONE_L1 -> genericPlace(Cone.L1(arm));
+            case CONE_L2 -> genericPlace(Cone.L2(arm));
+            case CONE_L3 -> genericPlace(Cone.L3(arm));
         };
     }
 
-    private Command placeL1() {
-        return Cube.L1(arm)
-                .andThen(MAN_R(manipulator))
-                .andThen(retract());
-    }
-
-    private Command placeL2() {
-        return Cube.L2(arm)
-                .andThen(MAN_R(manipulator))
-                .andThen(retract());
-    }
-
-    private Command placeL3() {
-        return Cube.L3(arm)
+    private Command genericPlace(CommandBase command) {
+        return command
                 .andThen(MAN_R(manipulator))
                 .andThen(retract());
     }
@@ -54,6 +50,9 @@ public class AutoCommands {
     private Command retract() {
         return new ClimberCommand(30, arm)
                 .andThen(R(arm))
-                .alongWith(new MecanumPathFollower(drive, "test", Constants.SlowAutoConstraints, true));
+                .alongWith(
+                        new MecanumPathFollower(drive, "test", Constants.SlowAutoConstraints, true)
+                                .unless(() -> !leaveCommunity)
+                );
     }
 }

@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import team.ironriders.lib.Utils;
 import team.ironriders.subsystems.ManipulatorSubsystem;
 
-
 public class ManipulatorCommand extends CommandBase {
     public enum Direction {
         GRAB,

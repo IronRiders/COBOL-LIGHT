@@ -30,8 +30,8 @@ public class Commands {
 
         public static CommandBase L2(ArmSubsystem arm) {
             return new ClimberCommand(20, arm)
-                    .andThen(new PivotCommand(1.5, arm))
-                    .andThen(new ClimberCommand(65, arm));
+                    .andThen(new PivotCommand(1.43, arm))
+                    .andThen(new ClimberCommand(60, arm));
         }
 
         public static CommandBase L3(ArmSubsystem arm) {

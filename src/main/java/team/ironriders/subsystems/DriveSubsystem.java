@@ -13,7 +13,6 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -68,8 +67,6 @@ public class DriveSubsystem extends SubsystemBase {
         poseEstimator =
                 new MecanumDrivePoseEstimator(
                         getKinematics(), pigeon.getRotation2d(), getWheelPositions(), new Pose2d());
-
-        SmartDashboard.putBoolean("Drive", true);
     }
 
     public void invertDrive() {
@@ -103,10 +100,10 @@ public class DriveSubsystem extends SubsystemBase {
                                 yController.getSetpoint(),
                                 new Rotation2d(getThetaController().getSetpoint())));
 
-        SmartDashboard.putNumber("Gyro", pigeon.getAngle() % 360);
+        SmartDashboard.putNumber("Gyro", Math.abs(pigeon.getAngle() % 360));
 
         // Tuning
-        NetworkTableInstance.getDefault().flush();
+        // NetworkTableInstance.getDefault().flush();
 
         /* SmartDashboard.putNumber("x controller", getPose2d().getX());
         SmartDashboard.putNumber("x Controller (target)", xController.getSetpoint());
@@ -144,8 +141,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void setWheelSpeeds(MecanumDriveWheelSpeeds speed, boolean needPID) {
-        if (!SmartDashboard.getBoolean("Drive", true)) { return; }
-
         frontLeftMotor.setVelocity(speed.frontLeftMetersPerSecond, needPID);
         frontRightMotor.setVelocity(speed.frontRightMetersPerSecond, needPID);
         rearRightMotor.setVelocity(speed.rearLeftMetersPerSecond, needPID);
