@@ -87,9 +87,9 @@ public class RobotContainer {
         controller.button(6).whileTrue(new StartEndCommand(manipulator::release, manipulator::stop, manipulator));
 
         // l3
-        controller.button(7).onTrue(Cone.L3(arm));
+        controller.button(7).onTrue(Cube.L3(arm));
         // l2
-        controller.button(10).onTrue(Cone.L2(arm));
+        controller.button(10).onTrue(Cube.L2(arm));
         // l1
         controller.button(11).onTrue(Cone.L1(arm));
 

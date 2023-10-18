@@ -14,7 +14,7 @@ public class Commands {
     }
 
     public static CommandBase HP(ArmSubsystem arm, ManipulatorSubsystem manipulator) {
-        return new PivotClimberMoveCommand(1.5, 80, arm)
+        return new PivotClimberMoveCommand(1.475, 80, arm)
                 .andThen(new ManipulatorCommand(ManipulatorCommand.Direction.RELEASE, manipulator));
     }
 
@@ -48,7 +48,7 @@ public class Commands {
 
         public static CommandBase L2(ArmSubsystem arm) {
             return new ClimberCommand(0, arm)
-                    .andThen(new PivotCommand(1.15, arm))
+                    .andThen(new PivotCommand(1.25, arm))
                     .andThen(new ClimberCommand(110, arm));
         }
 

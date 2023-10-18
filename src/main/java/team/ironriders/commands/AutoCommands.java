@@ -52,6 +52,7 @@ public class AutoCommands {
                 .andThen(new PivotClimberMoveCommand(0, 0, arm))
                 .alongWith(
                         new MecanumPathFollower(drive, "test", Constants.SlowAutoConstraints, true)
+                                .andThen(new RotateToCommand(180, drive))
                                 .unless(() -> !leaveCommunity)
                 );
     }

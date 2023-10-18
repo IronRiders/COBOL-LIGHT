@@ -30,7 +30,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
         manipulatorLeftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, -30);
 
         // This needs to be here so that if the robot starts up without redeploying the soft limits are enabled
-        boolean enabled = true;
+        boolean enabled = false;
         manipulatorRightMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, enabled);
         manipulatorRightMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, enabled);
         manipulatorLeftMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, enabled);

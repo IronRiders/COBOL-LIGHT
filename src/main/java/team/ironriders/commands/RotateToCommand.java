@@ -24,14 +24,14 @@ public class RotateToCommand extends CommandBase {
         drive.setChassisSpeeds(
                 0,
                 0,
-                MathUtil.clamp(error() / 5, -1, 1) * Constants.DRIVE_SPEED_SLOW,
+                MathUtil.clamp(-error() / 20, -1, 1) * Constants.DRIVE_SPEED_SLOW,
                 false
         );
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(error()) < 1.5;
+        return Math.abs(error()) < 3;
     }
 
     private double error() {
