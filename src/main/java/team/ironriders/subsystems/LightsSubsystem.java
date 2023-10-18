@@ -17,6 +17,7 @@ public class LightsSubsystem extends SubsystemBase {
         CUBE,
         GREEN,
         YELLOW,
+        BLUE,
         RAINBOW,
         TEAM,
         NOISE,
@@ -48,6 +49,7 @@ public class LightsSubsystem extends SubsystemBase {
         lightPatternChooser.addOption("Cube", "CUBE");
         lightPatternChooser.addOption("Green", "GREEN");
         lightPatternChooser.addOption("Yellow", "YELLOW");
+        lightPatternChooser.addOption("Blue", "BLUE");
         lightPatternChooser.addOption("Noise", "NOISE");
         lightPatternChooser.addOption("Custom Color", "CUSTOM");
 
@@ -83,6 +85,7 @@ public class LightsSubsystem extends SubsystemBase {
             case CONE, YELLOW -> setColorRGB(255, 255, 0);
             case CUBE -> setColorRGB(255, 0, 255);
             case GREEN -> setColorRGB(0, 200, 0);
+            case BLUE -> setColorRGB(0, 0, 255);
             case RAINBOW -> rainbow();
             case TEAM -> {
                 if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
